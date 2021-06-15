@@ -14,7 +14,7 @@ import ulti.shared.client.ClientUlti
 object Screens {
 
   def spectatorScreen(spectatorState: SpectatorState, commander: ClientEventHandler[ClientEvent]): TagOf[Div] = {
-
+    Directives.loadExternalCss()
     if (spectatorState.offlineState.isInstanceOf[OfflineUltiSpectatorState]) {
       val offlineUltiSpectatorState = spectatorState.offlineState.asInstanceOf[OfflineUltiSpectatorState]
 
@@ -64,6 +64,7 @@ object Screens {
   }
 
   def playerScreen(clientState: ClientState, commander: ClientEventHandler[ClientEvent]): TagOf[Div] = {
+    Directives.loadExternalCss()
     assert(clientState.frontendUniverse.isDefined)
     val fu = clientState.frontendUniverse.get
     assert(fu.game.isDefined)
@@ -138,10 +139,11 @@ object Screens {
                 "0px"
             }
             val customRadius = if (offlineUltiState.smallCards) 150 else 300
+            val cardHandAnimation = if (innerUlti.phase == GameOverPhase) "delayed_disappear 1s forwards" else ""
             div(color:="yellow",
               div(
                 Directives.cardHand(scw, commander = commander, radius = customRadius, centerPoint = cardHandCenterPoint),
-                position:="absolute", left:="50%", bottom:=offset, transform:="translate(-50%)"
+                position:="absolute", left:="50%", bottom:=offset, transform:="translate(-50%)", animation:=cardHandAnimation
               ),
               Option.when(innerUlti.phase == BiddingPhase && !(innerUlti.playerHands(innerUlti.currentPlayer).map(_.size).getOrElse(0) == 12))
               ({
@@ -286,6 +288,7 @@ object Screens {
     }
 
     val horizontalOffset2: Int = - (178 / (300/customRadius))
+    val cardAnimation = if (ulti.innerUlti.map(_.phase).contains(GameOverPhase)) "delayed_disappear 1s forwards" else ""
 
     div(color:="yellow",
       div(
@@ -293,19 +296,19 @@ object Screens {
           innerUlti.getSortedPlayerHand(UltiPlayer1) match {
             case Left(number) => Directives.cardHandWithBacks(number, radius = customRadius, centerPoint = (horizontalOffset2/2, -100))
             case Right(cards) => Directives.cardHand(cards.map(card => (card, false)), radius = customRadius, centerPoint = (horizontalOffset2/2, -100), commander = null)
-          }, position:="absolute", left:="50%", transform:="translate(-50%)", bottom:="0px"
+          }, position:="absolute", left:="50%", transform:="translate(-50%)", bottom:="0px", animation:=cardAnimation
         ),
         div(
           innerUlti.getSortedPlayerHand(UltiPlayer2) match {
             case Left(number) => Directives.cardHandWithBacks(number, radius = customRadius, borderDegree = 135, centerPoint = (horizontalOffset2/2, 0))
             case Right(cards) => Directives.cardHand(cards.map(card => (card, false)), radius = customRadius, borderDegree = 135, centerPoint = (horizontalOffset2/2, 0), commander = null)
-          }, position:="absolute", bottom:=verticalOffsetFor2And3 + "px", right:=horizontalOffset + "px"
+          }, position:="absolute", bottom:=verticalOffsetFor2And3 + "px", right:=horizontalOffset + "px", animation:=cardAnimation
         ),
         div(
           innerUlti.getSortedPlayerHand(UltiPlayer3) match {
             case Left(number) => Directives.cardHandWithBacks(number, radius = customRadius, borderDegree = 45, centerPoint = (horizontalOffset2/2, 0))
             case Right(cards) => Directives.cardHand(cards.map(card => (card, false)), radius = customRadius, borderDegree = 45, centerPoint = (horizontalOffset2/2, 0), commander = null)
-          }, position:="absolute", bottom:= verticalOffsetFor2And3 + "px", left:=horizontalOffset + "px"
+          }, position:="absolute", bottom:= verticalOffsetFor2And3 + "px", left:=horizontalOffset + "px", animation:=cardAnimation
         ),
         Directives.playerInfo(UltiPlayer1, innerUlti)(players)(position:="absolute", left:="50%", transform:="translate(-50%)", bottom:="40px"),
         Directives.playerInfo(UltiPlayer2, innerUlti)(players)(position:="absolute", left:="1550px", bottom:="700px"),
@@ -317,10 +320,9 @@ object Screens {
             else
               div()
           }
-          case PlayingPhase => {
+          case _ => {
             Directives.cardsInTheMiddle(innerUlti)(position:="absolute", left:="50%", transform:="translate(-50%)", bottom:="0px")
           }
-          case _ => div()
         }
       ),
       width:=defaultDimensions._1 + "px",
@@ -343,7 +345,7 @@ object Screens {
           li(FrontendPlayer.getNameOfPlayerWithRole(UltiPlayer2.roleId) + {if (ulti.readyForNextRound(UltiPlayer2)) " ✓" else ""}),
           li(FrontendPlayer.getNameOfPlayerWithRole(UltiPlayer3.roleId) + {if (ulti.readyForNextRound(UltiPlayer3)) " ✓" else ""}),
         )
-      )(position:="absolute", left:="50%", transform:="translate(-50%)", top:="50px"))
+      )(position:="absolute", left:="50%", transform:="translate(-50%)", top:="50px", animation:="delayed_appear 1s forwards"))
     )
   }
 }

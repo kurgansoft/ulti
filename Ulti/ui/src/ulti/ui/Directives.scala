@@ -167,6 +167,12 @@ object Directives {
     }
 
     val innerUlti = ulti.innerUlti.get
+    val offset = {
+      if (smallCards)
+        "-35px"
+      else
+        "50px"
+    }
     innerUlti.phase match {
       case BiddingPhase => {
         if (innerUlti.talonOnTheTable) {
@@ -182,12 +188,6 @@ object Directives {
         }
       }
       case PlayingPhase => {
-        val offset = {
-          if (smallCards)
-            "-35px"
-          else
-            "50px"
-        }
           div(
             Option.when(trumpSuitSelectorShouldBeDisplayed(innerUlti, you))
             (Directives.declareTrumpSuitScreen(innerUlti.currentBid.get, commander)(position:="relative", left:="50%", transform:="translate(-50%)", width:="fit-content")),
@@ -199,16 +199,20 @@ object Directives {
       }
       case GameOverPhase => {
         div(
-          Directives.resultsDirective(innerUlti)(players), br,
-          Directives.aggregatedResultsDirective(ulti)(players),br,
-          if (ulti.readyForNextRound(you)) {
-            div("You are ready... :-)", textAlign:="center")
-          } else {
-            button(`class`:="btn btn-primary", "READY", onClick --> Callback {
-              commander.addAnEventToTheEventQueue(ReadyEvent)
-            })(position:="relative", left:="50%", transform:="translate(-50%)")
-          }
-        )(position:="absolute", left:="50%", transform:="translate(-50%)", top:="50px")
+          div(
+            Directives.resultsDirective(innerUlti)(players), br,
+            Directives.aggregatedResultsDirective(ulti)(players),br,
+            if (ulti.readyForNextRound(you)) {
+              div("You are ready... :-)", textAlign:="center")
+            } else {
+              button(`class`:="btn btn-primary", "READY", onClick --> Callback {
+                commander.addAnEventToTheEventQueue(ReadyEvent)
+              })(position:="relative", left:="50%", transform:="translate(-50%)")
+            }
+          )(position:="absolute", left:="50%", transform:="translate(-50%)", top:="50px", animation:="delayed_appear 1s forwards"),
+          Directives.cardsInTheMiddle(innerUlti, Some(you), offlineUltiState.smallCards)
+          (position:="absolute", bottom:=offset, left:="50%", transform:="translate(-50%)")
+        )
       }
     }
   }
@@ -285,7 +289,6 @@ object Directives {
   }
 
   def cardsInTheMiddle(innerUlti: ClientInnerUlti, you: Option[UltiPlayer] = None, smallCards: Boolean = false): TagOf[Div] = {
-    Directives.loadExternalCss()
     val theCards: List[Card] = {
       if (innerUlti.cardsOnTheTable.nonEmpty) {
         innerUlti.cardsOnTheTable

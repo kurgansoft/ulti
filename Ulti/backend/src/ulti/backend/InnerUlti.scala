@@ -141,7 +141,7 @@ case class InnerUlti(
   def toClientInnerUlti(role: Option[UltiPlayer] = None): ClientInnerUlti = {
     val ph: Map[UltiPlayer, Either[Int, Set[Card]]] =
       playerHands.transform((ultiPlayer, value) => {
-        if (role.contains(ultiPlayer) || (phase == PlayingPhase && round >=2 && currentBid.exists(_.open)))
+        if (role.contains(ultiPlayer) || ((phase == PlayingPhase || phase == GameOverPhase) && round >=2 && currentBid.exists(_.open)))
           Right(value)
         else
           Left(value.size)
