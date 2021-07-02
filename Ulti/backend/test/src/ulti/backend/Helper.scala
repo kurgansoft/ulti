@@ -1,4 +1,4 @@
-package risk.backend
+package ulti.backend
 
 import ulti.shared._
 import ulti.shared.contracts._

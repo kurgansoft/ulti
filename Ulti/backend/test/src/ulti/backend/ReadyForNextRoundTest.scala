@@ -1,4 +1,4 @@
-package risk.backend
+package ulti.backend
 
 import gbge.backend.{ExecuteEffect, Player}
 import gbge.shared.IN_PROGRESS

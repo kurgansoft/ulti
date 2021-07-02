@@ -1,4 +1,4 @@
-package risk.backend
+package ulti.backend
 
 import gbge.backend.{Failure, GeneralFailure, OK}
 import org.scalatest.funsuite.AnyFunSuite
