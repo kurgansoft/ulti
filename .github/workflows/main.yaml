@@ -1,0 +1,33 @@
+name: Generate a jar file and create a release with it
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: zulu
+          java-version: 19
+          cache: sbt
+      - name: Setup sbt
+        uses: sbt/setup-sbt@v1
+      - name: Creating one optimized JS file form UI module
+        run: sbt ui/fullOptJS
+      - name: Moving the previously generated js file to the resources folder of the backend module
+        run: mv ui/target/scala-3.3.5/ui-opt.js backend/src/main/resources
+      - name: Creating the jar file
+        run: sbt backend/assembly
+      - name: Renaming the generated jar
+        run: mv backend/target/scala-3.3.5/backend-assembly-0.1.0-SNAPSHOT.jar ./ulti.jar
+      - name: creating the release with 'gh' command
+        run: gh release create release_$(git rev-parse --short HEAD) ulti.jar --generate-notes
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
