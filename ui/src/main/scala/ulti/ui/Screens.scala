@@ -25,12 +25,11 @@ object Screens {
       val clientUlti = fu.game.get.asInstanceOf[ClientUlti]
 
       clientUlti.state match {
-        case NOT_STARTED => {
+        case NOT_STARTED =>
           div(
             h1("Ulti", textAlign:="center", color:="yellow", marginTop:="50px"),
             gbge.ui.display.GeneralDirectives.generalRoleDisplayer(spectatorState.frontendUniverse.get.players, clientUlti)(marginTop:="100px", fontSize:="xx-large"),
           )
-        }
         case IN_PROGRESS => {
           if (clientUlti.innerUlti.isDefined) {
             val h = offlineUltiSpectatorState.height

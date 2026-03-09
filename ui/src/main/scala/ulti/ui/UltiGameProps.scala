@@ -10,7 +10,6 @@ import japgolly.scalajs.react.vdom.TagOf
 import japgolly.scalajs.react.vdom.all.*
 import uiglue.EventLoop.EventHandler
 import uiglue.{Event, EventLoop}
-import ulti.shared.abstract0.UltiPlayer
 import ulti.shared.{UltiAction, UltiProps}
 import ulti.shared.client.ClientUlti
 import zio.{UIO, ZIO}
@@ -54,40 +53,40 @@ object UltiGameProps extends UltiProps with ClientGameProps[UltiAction, ClientUl
     implicit def convert(clientState: ClientState): (ClientState, EventLoop.EventHandler[Event] => UIO[List[Event]]) =
       (clientState, _ => ZIO.succeed(List.empty))
 
-    val tempClientState1 = clientState.copy(frontendUniverse = Some(newFU))
+    val step1 = clientState.copy(frontendUniverse = Some(newFU))
 
-    val tempClientState2 = {
-      if (!tempClientState1.offlineState.isInstanceOf[OfflineUltiState]) {
+    val step2 = {
+      if (!step1.offlineState.isInstanceOf[OfflineUltiState]) {
         val w = org.scalajs.dom.window.innerWidth.toInt
         val h = org.scalajs.dom.window.innerHeight.toInt
-        tempClientState1.copy(
-          offlineState = OfflineUltiState(dimensions = (w, h), yourRole = tempClientState1.yourRole.map(_.asInstanceOf[UltiPlayer]))
+        step1.copy(
+          offlineState = OfflineUltiState(dimensions = (w, h))
         )
       } else
-        clientState
+        step1
     }
-    val ous = tempClientState2.offlineState.asInstanceOf[OfflineUltiState]
+
+    val ous = step2.offlineState.asInstanceOf[OfflineUltiState]
     val newClientUlti: ClientUlti = newFU.game.get.asInstanceOf[ClientUlti]
 
     val result = if (newClientUlti.innerUlti.isDefined) {
       val newInnerUlti = newClientUlti.innerUlti.get
-      if (!tempClientState2.player.flatMap(_.role).contains(newInnerUlti.currentPlayer.roleId)) {
-        tempClientState2.copy(
+      if (!step2.player.flatMap(_.role).contains(newInnerUlti.currentPlayer.roleId)) {
+        step2.copy(
           offlineState = OfflineUltiState(
             dimensions = ous.dimensions,
             submitCardsWithSingleClick = ous.submitCardsWithSingleClick,
-            yourRole = tempClientState2.yourRole.map(_.asInstanceOf[UltiPlayer])
           ),
-          frontendUniverse = Some(newFU)
         )
       } else if (newInnerUlti.pickedUpTalon.nonEmpty && ous.selectedCards.isEmpty) {
-        tempClientState2.copy(offlineState = ous.copy(selectedCards = newInnerUlti.pickedUpTalon, submitCardsWithSingleClick = ous.submitCardsWithSingleClick), frontendUniverse = Some(newFU))
+        step2.copy(offlineState = ous.copy(selectedCards = newInnerUlti.pickedUpTalon, submitCardsWithSingleClick = ous.submitCardsWithSingleClick))
       } else {
-        tempClientState2.copy(frontendUniverse = Some(newFU))
+        step2
       }
     } else {
-      tempClientState2.copy(frontendUniverse = Some(newFU))
+      step2
     }
+
     result
   }
 

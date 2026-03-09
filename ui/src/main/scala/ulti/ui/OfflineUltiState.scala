@@ -49,17 +49,17 @@ case class OfflineUltiState(
                              submitCardsWithSingleClick: Boolean = false,
                              offlineErrorMessage: Option[String] = None,
                              dimensions: (Int, Int) = (0,0),
-                             yourRole: Option[UltiPlayer] = None
                            ) extends OfflineState[Any] {
   
   implicit def convert(offlineUltiState: OfflineUltiState): (OfflineUltiState, UIO[List[GeneralEvent]]) = (offlineUltiState, ZIO.succeed(List.empty[GeneralEvent]))
 
-  override def handleScreenEvent(sa: ScreenEvent, fu: Option[FrontendUniverse], playerId: Option[Int]): (OfflineUltiState, UIO[List[GeneralEvent]]) =
+  override def handleScreenEvent(sa: ScreenEvent, fu: Option[FrontendUniverse], playerId: Option[Int]): (OfflineUltiState, UIO[List[GeneralEvent]]) = {
     sa match {
       case ue: OfflineUltiEvent => reduce(ue, fu, playerId)
       case NewDimensions(w, h) => this.copy(dimensions = (w, h))
       case _ => this
     }
+  }
 
   lazy val separateBidScreen: Boolean = dimensions._2 < 1030
 
@@ -67,6 +67,7 @@ case class OfflineUltiState(
 
   private def reduce(offlineUltiEvent: OfflineUltiEvent, fu: Option[FrontendUniverse], playerId: Option[Int]): (OfflineUltiState, UIO[List[GeneralEvent]]) = {
     val clientUlti = fu.get.game.get.asInstanceOf[ClientUlti]
+    val yourRole = playerId.flatMap(clientUlti.getRoleById)
     val errorMessageCleared = this.copy(offlineErrorMessage = None)
     offlineUltiEvent match {
       case CardClicked(card) =>

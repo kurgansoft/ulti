@@ -4,7 +4,7 @@ import scala.collection.Seq
 
 ThisBuild / scalaVersion := "3.3.5"
 
-val gbgeCommitHash = "59ac7ceb5c6187eedabe8d33dc2290d7c73f0e4a"
+val gbgeCommitHash = "fa97ae3bd855cabe87ef0babc39b73a38def8d9a"
 
 lazy val common = crossProject(JSPlatform, JVMPlatform).in(file("common")).
   settings(
