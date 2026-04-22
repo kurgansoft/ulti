@@ -4,7 +4,7 @@ Traditional Hungarian trick-taking card game. Implemented with the [gbge](https:
 
 # How to play
 
-* Make sure you have JRE >= 11 installed
+* Make sure you have JRE >= 17 installed
 * Download the latest jar file from the releases section.
 * The command ```java -jar ulti.jar``` will launch the game server with default options:
    * Join the game with url: http://localhost:8080

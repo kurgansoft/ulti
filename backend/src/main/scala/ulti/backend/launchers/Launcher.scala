@@ -1,6 +1,7 @@
 package ulti.backend.launchers
 
-import gbge.backend.{BackendGameProps, GameConfig, GenericLauncher}
+import gbge.backend.config.GameConfig
+import gbge.backend.{BackendGameProps, GenericLauncher}
 import ulti.backend.BackendUltiProps
 import zio.{ConfigProvider, Runtime, Scope, ZIO, ZIOAppArgs, ZIOAppDefault, ZLayer}
 
