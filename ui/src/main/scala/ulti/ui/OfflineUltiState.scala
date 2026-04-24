@@ -1,11 +1,11 @@
 package ulti.ui
 
 import gbge.client.{DispatchActionWithToken, GeneralEvent}
-import gbge.shared.FrontendUniverse
+import gbge.shared.{FrontendUniverse, GameRole}
 import gbge.ui.eps.player.ScreenEvent
 import gbge.ui.state.OfflineState
 import ulti.shared.*
-import ulti.shared.abstract0.{BiddingPhase, PlayingPhase, UltiPlayer}
+import ulti.shared.abstract0.{BiddingPhase, PlayingPhase}
 import ulti.shared.client.ClientUlti
 import ulti.shared.contracts.Contract
 import ulti.ui.offline_stuff.{BidProposition, Proposition}
@@ -67,7 +67,10 @@ case class OfflineUltiState(
 
   private def reduce(offlineUltiEvent: OfflineUltiEvent, fu: Option[FrontendUniverse], playerId: Option[Int]): (OfflineUltiState, UIO[List[GeneralEvent]]) = {
     val clientUlti = fu.get.game.get.asInstanceOf[ClientUlti]
-    val yourRole = playerId.flatMap(clientUlti.getRoleById)
+
+    val yourRoleId: Option[Int] = playerId.flatMap(id => fu.flatMap(_.players.find(_.id == id))).flatMap(_.role)
+    val yourRole: Option[GameRole] = yourRoleId.flatMap(clientUlti.getRoleById)
+
     val errorMessageCleared = this.copy(offlineErrorMessage = None)
     offlineUltiEvent match {
       case CardClicked(card) =>

@@ -181,8 +181,7 @@ object Screens {
                   } else {
                     div(
                       Directives.bidPropositionScreen(offlineUltiState.bidProposition, innerUlti.winningBidTuple, eventHandler, offlineUltiState.smallCards)(fu.players)
-                      (position:= "absolute", left:="50%", transform:="translate(-50%)", top:="200px", width:="830px"),
-                      div("AKELA - 183")
+                      (position:= "absolute", left:="50%", transform:="translate(-50%)", top:="200px", width:="830px")
                     )
                   },
                   div(
