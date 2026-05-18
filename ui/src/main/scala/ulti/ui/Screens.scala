@@ -75,8 +75,8 @@ object Screens {
     if (ulti.state == NOT_STARTED) {
       div(color:="yellow",
         div(s"Hi ${clientState.you.get._2}!", textAlign:="center"),
-        gbge.ui.display.GeneralDirectives.generalRoleChooserScreen(clientState.player.get, fu.players, fu.game.get, eventHandler),br,br,
-        Option.when(clientState.player.exists(_.isAdmin))
+        gbge.ui.display.GeneralDirectives.generalRoleChooserScreen(clientState.playerMaybe.get, fu.players, fu.game.get, eventHandler),br,br,
+        Option.when(clientState.playerMaybe.exists(_.isAdmin))
         (button(`class`:="btn btn-primary", "LAUNCH GAME", onClick --> Callback {
           eventHandler(ClientInit)
         })(position:="relative", left:="50%", transform:="translate(-50%"))
@@ -84,7 +84,7 @@ object Screens {
     }
     else {
       val innerUlti = ulti.innerUlti.get
-      val player = clientState.player.get
+      val player = clientState.playerMaybe.get
       val yourName = player.name
       val ultiPlayer: Option[UltiPlayer] = player.role match {
         case Some(roleId) => UltiPlayer.getUltiPlayerFromRole(roleId).toOption

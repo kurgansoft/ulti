@@ -71,7 +71,7 @@ object UltiGameProps extends UltiProps with ClientGameProps[UltiAction, ClientUl
 
     val result = if (newClientUlti.innerUlti.isDefined) {
       val newInnerUlti = newClientUlti.innerUlti.get
-      if (!step2.player.flatMap(_.role).contains(newInnerUlti.currentPlayer.roleId)) {
+      if (!step2.playerMaybe.flatMap(_.role).contains(newInnerUlti.currentPlayer.roleId)) {
         step2.copy(
           offlineState = OfflineUltiState(
             dimensions = ous.dimensions,
