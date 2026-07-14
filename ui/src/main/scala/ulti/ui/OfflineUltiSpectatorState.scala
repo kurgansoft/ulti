@@ -1,7 +1,7 @@
 package ulti.ui
 
+import gbge.client.events_and_effects.{PlayerEvent, ScreenEvent}
 import gbge.shared.FrontendUniverse
-import gbge.ui.eps.player.{PlayerEvent, ScreenEvent}
 import gbge.ui.state.OfflineState
 import zio.{UIO, ZIO}
 

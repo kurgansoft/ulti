@@ -1,8 +1,7 @@
 package ulti.ui
 
-import gbge.client.{DispatchActionWithToken, GeneralEvent}
+import gbge.client.events_and_effects.{DispatchActionWithToken, GeneralEvent, ScreenEvent}
 import gbge.shared.{FrontendUniverse, GameRole}
-import gbge.ui.eps.player.ScreenEvent
 import gbge.ui.state.OfflineState
 import ulti.shared.*
 import ulti.shared.abstract0.{BiddingPhase, PlayingPhase}
